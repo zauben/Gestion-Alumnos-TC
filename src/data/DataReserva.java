@@ -28,7 +28,7 @@ public class DataReserva {
 					Reserva r=new Reserva();
 					r.setElemento(new Elemento());
 					r.setId_reserva(rs.getInt("id_reserva"));
-					r.setFecha_hora(rs.getDate("fecha_hora"));
+					//r.setFecha_hora(rs.getString("fecha_hora")); ver
 					r.setDescripcion(rs.getString("descripcion"));
 					r.getElemento().setId_elemento(rs.getInt("id_elemento"));
 		 			r.getElemento().setNombre(rs.getString("e.nombre"));
@@ -55,12 +55,13 @@ public class DataReserva {
 		try {
 			stmt=FactoryConexion.getInstancia().getConn()
 					.prepareStatement(
-					"insert into reserva(fecha_hora, descripcion, id_elemento) values (?,?,?)",
+					"insert into reserva(fecha_hora, descripcion, id_elemento, id_persona) values (?,?,?,?)",
 					PreparedStatement.RETURN_GENERATED_KEYS
 					);
-			stmt.setDate(1,r.getFecha_hora());
+			stmt.setString(1,r.getFecha_hora().toString());
  			stmt.setString(2, r.getDescripcion());
  			stmt.setInt(3, r.getElemento().getId_elemento());
+ 			stmt.setInt(4, r.getPersona().getId_persona());
 			stmt.executeUpdate();
 			keyResultSet=stmt.getGeneratedKeys();
 			if(keyResultSet!=null && keyResultSet.next()){
@@ -116,7 +117,7 @@ public class DataReserva {
 					PreparedStatement.RETURN_GENERATED_KEYS
 					);
 			
-			stmt.setDate(1, r.getFecha_hora());
+			stmt.setString(1, r.getFecha_hora().toString());
 			stmt.setString(2, r.getDescripcion());
 			stmt.setInt(3, r.getElemento().getId_elemento());
 			stmt.setInt(4, r.getId_reserva());			

@@ -1,11 +1,12 @@
 package entity;
 
 import java.sql.Date;
+import java.text.DateFormat;
 
 public class Reserva {
 	
 	private int id_reserva;
-	private Date fecha_hora;
+	private DateFormat fecha_hora;
 	private String descripcion;
 	private Elemento elemento;
 	private Persona persona;
@@ -26,11 +27,11 @@ public class Reserva {
 		this.id_reserva = id_reserva;
 	}
 	
-	public Date getFecha_hora() {
+	public DateFormat getFecha_hora() {
 		return fecha_hora;
 	}
 	
-	public void setFecha_hora(Date fecha_hora) {
+	public void setFecha_hora(DateFormat fecha_hora) {
 		this.fecha_hora = fecha_hora;
 	}
 	
@@ -53,7 +54,7 @@ public class Reserva {
 	public Reserva() {
 	}
 
-	public Reserva(Date fecha_hora, String descripcion) {
+	public Reserva(DateFormat fecha_hora, String descripcion) {
 		this.fecha_hora = fecha_hora;
 		this.descripcion = descripcion;
 	}

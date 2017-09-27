@@ -1,6 +1,7 @@
 package ui;
 
 import java.awt.BorderLayout;
+import java.awt.Component;
 import java.awt.EventQueue;
 
 import javax.swing.JFrame;
@@ -20,9 +21,11 @@ import entity.TipoElemento;
 
 import javax.swing.ComboBoxModel;
 import javax.swing.DefaultComboBoxModel;
+import javax.swing.DefaultListCellRenderer;
 import javax.swing.GroupLayout;
 import javax.swing.GroupLayout.Alignment;
 import javax.swing.JLabel;
+import javax.swing.JList;
 import javax.swing.JOptionPane;
 import javax.swing.JComboBox;
 import javax.swing.JTextField;
@@ -88,17 +91,40 @@ public class AMBCReserva extends JFrame {
 		JLabel lblTipo = new JLabel("Tipo de Elemento");
 
 		JComboBox cboTipos = new JComboBox();
-		cboTipos.setModel(new DefaultComboBoxModel<TipoElemento>(this.loadtipos().toArray(new TipoElemento[0])));
+		cboTipos.setModel(new DefaultComboBoxModel<TipoElemento>(ctrltipo.loadtipos().toArray(new TipoElemento[0])));
+		cboTipos.setSelectedItem(null);;
 		JComboBox cboElementos = new JComboBox();
+
+		class CategoryListCellRenderer extends DefaultListCellRenderer {
+
+		    @Override
+		    public Component getListCellRendererComponent(JList<?> list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
+
+		        if (value instanceof Elemento) {
+		            value = ((Elemento)value).getNombre();
+		        }
+
+		        return super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus); //To change body of generated methods, choose Tools | Templates.
+
+		    }
+
+		}
+		
+		cboElementos.setRenderer(new CategoryListCellRenderer());
 		
 		cboTipos.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				TipoElemento tipoItemActual = (TipoElemento) cboTipos.getSelectedItem();
 				cboElementos.removeAllItems();
-				cboElementos.setModel(new DefaultComboBoxModel<Elemento>(
-						ctrlelemento.loadElementos(tipoItemActual).toArray(new Elemento[0])));
+				cboElementos.setModel(loadele(tipoItemActual));
 
 			}
+			
+			public DefaultComboBoxModel loadele(TipoElemento tipoItemActual) {
+				DefaultComboBoxModel elem = new DefaultComboBoxModel();
+				for (int i = 0; i < ctrlelemento.loadElementos(tipoItemActual).size(); i++) {
+					elem.addElement(ctrlelemento.loadElementos(tipoItemActual).get(i));}
+				return elem;}
 
 		});
 
@@ -137,7 +163,7 @@ public class AMBCReserva extends JFrame {
 		JButton btnGuardar = new JButton("Guardar Reserva");
 		btnGuardar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				guardarClick();
+				guardarClick(cboElementos.getSelectedIndex());
 			}
 		});
 		btnGuardar.addMouseListener(new MouseAdapter() {
@@ -145,68 +171,85 @@ public class AMBCReserva extends JFrame {
 		});
 
 		this.mapearUsuarioLogueado(ctrlper.getLogged());
+		
+		JLabel lblYyyymmdd = new JLabel("yyyy-mm-dd");
 
 		GroupLayout gl_contentPane = new GroupLayout(contentPane);
-		gl_contentPane.setHorizontalGroup(gl_contentPane.createParallelGroup(Alignment.LEADING)
-				.addGroup(gl_contentPane.createSequentialGroup().addContainerGap()
-						.addGroup(gl_contentPane.createParallelGroup(Alignment.LEADING).addComponent(lblNombre)
-								.addComponent(lblApellido).addComponent(lblIdReserva).addComponent(lblTipo)
-								.addComponent(lblElemento).addComponent(lblFechahora).addComponent(lblNewLabel))
-						.addGap(30)
-						.addGroup(gl_contentPane.createParallelGroup(Alignment.LEADING)
-								.addGroup(gl_contentPane.createSequentialGroup()
-										.addComponent(txtDescripcion, 98, 98, 98).addGap(173))
-								.addGroup(gl_contentPane.createSequentialGroup()
-										.addComponent(txtFechaHora, GroupLayout.PREFERRED_SIZE, 129,
-												GroupLayout.PREFERRED_SIZE)
-										.addContainerGap(142, Short.MAX_VALUE))
-								.addGroup(gl_contentPane.createSequentialGroup()
-										.addComponent(cboTipos, 0, 141, Short.MAX_VALUE).addGap(130))
-								.addGroup(gl_contentPane
-										.createSequentialGroup()
-										.addComponent(txtId_reserva, GroupLayout.PREFERRED_SIZE,
-												GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-										.addContainerGap())
-								.addGroup(gl_contentPane.createSequentialGroup()
-										.addGroup(gl_contentPane.createParallelGroup(Alignment.TRAILING, false)
-												.addComponent(txtApellido, Alignment.LEADING).addComponent(txtNombre,
-														Alignment.LEADING, GroupLayout.DEFAULT_SIZE, 112,
-														Short.MAX_VALUE))
-										.addContainerGap())
-								.addGroup(Alignment.TRAILING, gl_contentPane.createSequentialGroup()
-										.addGroup(gl_contentPane.createParallelGroup(Alignment.TRAILING)
-												.addComponent(btnGuardar, GroupLayout.PREFERRED_SIZE, 122,
-														GroupLayout.PREFERRED_SIZE)
-												.addComponent(cboElementos, 0, 141, Short.MAX_VALUE))
-										.addGap(130)))));
-		gl_contentPane.setVerticalGroup(gl_contentPane.createParallelGroup(Alignment.LEADING).addGroup(gl_contentPane
-				.createSequentialGroup().addGap(23)
-				.addGroup(gl_contentPane.createParallelGroup(Alignment.LEADING)
-						.addGroup(gl_contentPane.createSequentialGroup().addComponent(lblNombre).addGap(18)
-								.addGroup(gl_contentPane.createParallelGroup(Alignment.BASELINE)
-										.addComponent(lblApellido).addComponent(txtApellido, GroupLayout.PREFERRED_SIZE,
-												GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)))
-						.addComponent(txtNombre, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE,
-								GroupLayout.PREFERRED_SIZE))
-				.addGap(18)
-				.addGroup(gl_contentPane.createParallelGroup(Alignment.LEADING)
-						.addComponent(txtId_reserva, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE,
-								GroupLayout.PREFERRED_SIZE)
-						.addComponent(lblIdReserva))
-				.addGap(18)
-				.addGroup(gl_contentPane.createParallelGroup(Alignment.BASELINE).addComponent(lblTipo).addComponent(
-						cboTipos, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
-				.addGap(18)
-				.addGroup(gl_contentPane.createParallelGroup(Alignment.BASELINE).addComponent(lblElemento).addComponent(
-						cboElementos, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
-				.addPreferredGap(ComponentPlacement.UNRELATED)
-				.addGroup(gl_contentPane
-						.createParallelGroup(Alignment.BASELINE).addComponent(lblFechahora).addComponent(txtFechaHora,
-								GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
-				.addGap(18)
-				.addGroup(gl_contentPane.createParallelGroup(Alignment.LEADING).addComponent(lblNewLabel)
+		gl_contentPane.setHorizontalGroup(
+			gl_contentPane.createParallelGroup(Alignment.LEADING)
+				.addGroup(gl_contentPane.createSequentialGroup()
+					.addContainerGap()
+					.addGroup(gl_contentPane.createParallelGroup(Alignment.LEADING)
+						.addComponent(lblNombre)
+						.addComponent(lblApellido)
+						.addComponent(lblIdReserva)
+						.addComponent(lblTipo)
+						.addComponent(lblElemento)
+						.addComponent(lblFechahora)
+						.addComponent(lblNewLabel))
+					.addGap(30)
+					.addGroup(gl_contentPane.createParallelGroup(Alignment.LEADING)
+						.addGroup(gl_contentPane.createSequentialGroup()
+							.addComponent(txtId_reserva, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+							.addContainerGap())
+						.addGroup(Alignment.TRAILING, gl_contentPane.createSequentialGroup()
+							.addComponent(cboTipos, 0, 141, Short.MAX_VALUE)
+							.addGap(130))
+						.addGroup(Alignment.TRAILING, gl_contentPane.createSequentialGroup()
+							.addGroup(gl_contentPane.createParallelGroup(Alignment.TRAILING)
+								.addComponent(btnGuardar, GroupLayout.PREFERRED_SIZE, 122, GroupLayout.PREFERRED_SIZE)
+								.addComponent(cboElementos, 0, 141, Short.MAX_VALUE))
+							.addGap(130))
+						.addGroup(gl_contentPane.createSequentialGroup()
+							.addComponent(txtFechaHora, GroupLayout.PREFERRED_SIZE, 129, GroupLayout.PREFERRED_SIZE)
+							.addGap(18)
+							.addComponent(lblYyyymmdd)
+							.addContainerGap())
+						.addGroup(gl_contentPane.createSequentialGroup()
+							.addGroup(gl_contentPane.createParallelGroup(Alignment.TRAILING, false)
+								.addComponent(txtNombre, Alignment.LEADING)
+								.addComponent(txtApellido, Alignment.LEADING, GroupLayout.DEFAULT_SIZE, 124, Short.MAX_VALUE))
+							.addContainerGap())
+						.addGroup(Alignment.TRAILING, gl_contentPane.createSequentialGroup()
+							.addComponent(txtDescripcion, GroupLayout.PREFERRED_SIZE, 187, GroupLayout.PREFERRED_SIZE)
+							.addGap(84))))
+		);
+		gl_contentPane.setVerticalGroup(
+			gl_contentPane.createParallelGroup(Alignment.TRAILING)
+				.addGroup(gl_contentPane.createSequentialGroup()
+					.addGap(23)
+					.addGroup(gl_contentPane.createParallelGroup(Alignment.BASELINE)
+						.addComponent(lblNombre)
+						.addComponent(txtNombre, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
+					.addGap(18)
+					.addGroup(gl_contentPane.createParallelGroup(Alignment.BASELINE)
+						.addComponent(lblApellido)
+						.addComponent(txtApellido, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
+					.addGap(18)
+					.addGroup(gl_contentPane.createParallelGroup(Alignment.BASELINE)
+						.addComponent(lblIdReserva)
+						.addComponent(txtId_reserva, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
+					.addGap(24)
+					.addGroup(gl_contentPane.createParallelGroup(Alignment.BASELINE)
+						.addComponent(lblTipo)
+						.addComponent(cboTipos, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
+					.addGap(18)
+					.addGroup(gl_contentPane.createParallelGroup(Alignment.BASELINE)
+						.addComponent(lblElemento)
+						.addComponent(cboElementos, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
+					.addPreferredGap(ComponentPlacement.UNRELATED)
+					.addGroup(gl_contentPane.createParallelGroup(Alignment.BASELINE)
+						.addComponent(lblFechahora)
+						.addComponent(txtFechaHora, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+						.addComponent(lblYyyymmdd))
+					.addGap(18)
+					.addGroup(gl_contentPane.createParallelGroup(Alignment.LEADING)
+						.addComponent(lblNewLabel)
 						.addComponent(txtDescripcion, GroupLayout.PREFERRED_SIZE, 53, GroupLayout.PREFERRED_SIZE))
-				.addGap(18).addComponent(btnGuardar).addContainerGap(13, Short.MAX_VALUE)));
+					.addGap(18)
+					.addComponent(btnGuardar)
+					.addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+		);
 		contentPane.setLayout(gl_contentPane);
 
 	}
@@ -216,28 +259,19 @@ public class AMBCReserva extends JFrame {
 		this.txtApellido.setText(per.getApellido());
 	}
 
-	protected void guardarClick() {
-		ctrl.add(this.mapearDeForm());
+	protected void guardarClick(int i) {
+		ctrl.add(this.mapearDeForm(i));
 		// TODO Auto-generated method stub
 	}
 
-	public Reserva mapearDeForm() {
-		DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+	public Reserva mapearDeForm(int index) {
+		DateFormat dateFormat = new SimpleDateFormat(txtFechaHora.getText());
 		Reserva res = new Reserva();
-		Elemento ele = new Elemento();
-		res.setPersona(ctrlper.getLogged());
-		// aca hay que pasar el elemento seleccionado en el JCOMBOBOXELEMENTO
-		// dateFormat.parse(this.txtFechaHora.getText()); //ver conversion aca
-		// res.setFecha_hora(dateFormat);
 		res.setDescripcion(this.txtDescripcion.getText());
+		res.setPersona(ctrlper.getLogged());
+		res.setElemento((Elemento) cboElementos.getModel().getSelectedItem());//arreglar esta linea
+		res.setFecha_hora(dateFormat);
 
 		return res;
 	}
-
-	public List<TipoElemento> loadtipos() { // ESTAMOS TENIENDO ALGUN PROBLEMA CON ESTE METODO
-		java.util.List<TipoElemento> tipos = new java.util.ArrayList<TipoElemento>();
-		tipos.addAll(ctrltipo.getTipos());
-		return tipos;
-	}
-
 }
