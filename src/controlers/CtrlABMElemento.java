@@ -3,6 +3,8 @@ package controlers;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.swing.DefaultComboBoxModel;
+
 import data.DataElemento;
 import data.DataTipoElemento;
 import entity.Elemento;
@@ -34,7 +36,7 @@ public class CtrlABMElemento {
 
 	public Elemento getByNombre(Elemento e){
 		dataElem= new DataElemento();
-		return this.dataElem.getByNombre(e);
+		return this.dataElem.getByElemento(e);
 	
 	}
 	
@@ -47,8 +49,8 @@ public class CtrlABMElemento {
 	public Elemento getByNombre(String nombre){
 		dataElem= new DataElemento();
 		Elemento e=new Elemento();
-		e.setNombre(nombre);
-		return getByNombre(e);
+		e = dataElem.getByNombre(nombre);
+		return e;
 		
 	}
 	
@@ -75,4 +77,12 @@ public class CtrlABMElemento {
 public ArrayList<Elemento> getElementos(TipoElemento tipoel){ 
 	dataElem= new DataElemento();
 	return dataElem.getAll(tipoel);
-}}
+}
+
+public DefaultComboBoxModel loadele(TipoElemento tipoItemActual) {
+	DefaultComboBoxModel elem = new DefaultComboBoxModel();
+	for (int i = 0; i < this.loadElementos(tipoItemActual).size(); i++) {
+		elem.addElement(this.loadElementos(tipoItemActual).get(i));}
+	return elem;}
+
+}

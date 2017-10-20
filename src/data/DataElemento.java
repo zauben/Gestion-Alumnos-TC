@@ -53,7 +53,7 @@ public class DataElemento {
 	}
 	
 	
-	public Elemento getByNombre(Elemento elem){
+	public Elemento getByElemento(Elemento elem){
 		Elemento e=null;
 		PreparedStatement stmt=null;
 		ResultSet rs=null;
@@ -63,6 +63,41 @@ public class DataElemento {
 					+ "inner join tipoelemento t on e.id_tipo=t.id_tipo "
 					+ "where e.nombre=?");
 			stmt.setString(1, elem.getNombre());
+			rs=stmt.executeQuery();
+			if(rs!=null && rs.next()){
+					e=new Elemento();
+					e.setTipoElemento(new TipoElemento());
+					e.setId_elemento(rs.getInt("id_elemento"));
+					e.setNombre(rs.getString("e.nombre"));
+					e.getTipoElemento().setId_tipo(rs.getInt("id_tipo"));
+ 					e.getTipoElemento().setNombre(rs.getString("t.nombre"));					
+			}
+			
+		} catch (SQLException ex) {
+			ex.printStackTrace();
+		}
+		
+		try {
+			if(rs!=null)rs.close();
+			if(stmt!=null)stmt.close();
+			FactoryConexion.getInstancia().releaseConn();
+		} catch (SQLException ex) {
+			ex.printStackTrace();
+		}
+		
+		return e;
+	}
+	
+	public Elemento getByNombre(String elem){
+		Elemento e=null;
+		PreparedStatement stmt=null;
+		ResultSet rs=null;
+		try {
+			stmt=FactoryConexion.getInstancia().getConn().prepareStatement(
+					"select id_elemento, e.nombre, e.id_tipo, t.nombre from elemento e "
+					+ "inner join tipoelemento t on e.id_tipo=t.id_tipo "
+					+ "where e.nombre=?");
+			stmt.setString(1, elem);
 			rs=stmt.executeQuery();
 			if(rs!=null && rs.next()){
 					e=new Elemento();

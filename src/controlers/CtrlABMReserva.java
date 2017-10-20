@@ -1,6 +1,13 @@
 package controlers;
 
 import java.util.ArrayList;
+import java.util.List;
+
+import javax.swing.JComboBox;
+
+import org.jdesktop.beansbinding.AutoBinding.UpdateStrategy;
+import org.jdesktop.swingbinding.JComboBoxBinding;
+import org.jdesktop.swingbinding.SwingBindings;
 
 import data.DataElemento;
 import data.DataPersona;
@@ -11,6 +18,7 @@ import entity.Persona;
 import entity.Reserva;
 import entity.TipoElemento;
 import ui.AMBCReserva;
+import ui.AMBCReservasPendientes;
 
 public class CtrlABMReserva {
 
@@ -20,9 +28,13 @@ public class CtrlABMReserva {
 	private DataTipoElemento dataTipo;
 	private ArrayList<Reserva> res;
 	private AMBCReserva iuRe;
+	private AMBCReservasPendientes rePer;
 	
 
-	
+	public void initDataBindings(ArrayList<Elemento> elementos, JComboBox cboElementos_1) {
+		JComboBoxBinding<Elemento,List<Elemento>,JComboBox> jComboBinding = SwingBindings.createJComboBoxBinding(UpdateStrategy.READ_WRITE, elementos, cboElementos_1, "elementosDeUnTipo");
+		jComboBinding.bind();
+	}	
 	
 public CtrlABMReserva() {
 	dataRes = new DataReserva();
@@ -54,6 +66,16 @@ public void DialogoReserva() {
 	iuRe = new AMBCReserva();
 	iuRe.start();
 	// TODO Auto-generated method stub
+	
+}
+
+public void reservasDePer() {
+	rePer = new AMBCReservasPendientes();
+	rePer.start();
+}
+
+public ArrayList<Reserva> reservasDePer(Persona logged) {
+	return dataRes.getReservasdePer(logged);
 	
 }
 

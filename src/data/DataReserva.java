@@ -49,6 +49,48 @@ public class DataReserva {
 		return reservas;	
 	}
 	
+public ArrayList<Reserva> getReservasdePer(Persona per){ //OBTENER RESERVAS POR PERSONA
+		
+	PreparedStatement stmt=null;
+		ResultSet rs=null;
+		ArrayList<Reserva> reservas= new ArrayList<Reserva>();
+		try {
+			stmt = FactoryConexion.getInstancia().getConn()
+					.prepareStatement("select * from reserva r "
+		 			+ "inner join elemento e on r.id_elemento=e.id_elemento "
+		 			+ "where id_persona = ?",
+		 			PreparedStatement.RETURN_GENERATED_KEYS);
+			
+			stmt.setInt(1, per.getId_persona());
+			
+			
+			rs = stmt.executeQuery();
+			if(rs!=null){
+				while(rs.next()){
+					Reserva r=new Reserva();
+					r.setElemento(new Elemento());
+					r.setId_reserva(rs.getInt("id_reserva"));
+					r.setFecha_hora(rs.getTimestamp("fecha_hora")); 
+					r.setDescripcion(rs.getString("descripcion"));
+					r.getElemento().setId_elemento(rs.getInt("id_elemento"));
+		 			r.getElemento().setNombre(rs.getString("e.nombre"));
+		 			reservas.add(r);
+				}
+			}
+		} catch (SQLException e) {
+			
+			e.printStackTrace();
+		}
+		try {
+			if(rs!=null) rs.close();
+			if(stmt!=null) stmt.close();
+			FactoryConexion.getInstancia().releaseConn();
+		} catch (SQLException e) {	
+			e.printStackTrace();
+		}
+		return reservas;	
+	}
+	
 	public void add(Reserva r){
 		PreparedStatement stmt=null;
 		ResultSet keyResultSet=null;
@@ -58,7 +100,7 @@ public class DataReserva {
 					"insert into reserva(fecha_hora, descripcion, id_elemento, id_persona) values (?,?,?,?)",
 					PreparedStatement.RETURN_GENERATED_KEYS
 					);
-			stmt.setString(1,r.getFecha_hora().toString());
+			stmt.setTimestamp(1, new java.sql.Timestamp(r.getFecha_hora().getTime()));
  			stmt.setString(2, r.getDescripcion());
  			stmt.setInt(3, r.getElemento().getId_elemento());
  			stmt.setInt(4, r.getPersona().getId_persona());

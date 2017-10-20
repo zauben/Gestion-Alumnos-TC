@@ -8,7 +8,6 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 
-import com.mysql.fabric.xmlrpc.base.Array;
 
 import controlers.CtrlABMElemento;
 import controlers.CtrlABMPersona;
@@ -35,13 +34,18 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.sql.Date;
 import java.text.DateFormat;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 import java.awt.event.ItemListener;
 import java.awt.event.ItemEvent;
+import org.jdesktop.swingbinding.JComboBoxBinding;
+import org.jdesktop.swingbinding.SwingBindings;
+import org.jdesktop.beansbinding.AutoBinding.UpdateStrategy;
 
 public class AMBCReserva extends JFrame {
 
@@ -52,18 +56,19 @@ public class AMBCReserva extends JFrame {
 	private JTextField txtNombre;
 	private JTextField txtApellido;
 	private JComboBox cboTipos;
-	private JComboBox cboElementos;
 
-	private CtrlABMReserva ctrl;
+
+	private CtrlABMReserva ctrl = new CtrlABMReserva();
 	private CtrlABMElemento ctrlelemento = new CtrlABMElemento();
 	private CtrlABMTipo ctrltipo = new CtrlABMTipo();
 	private CtrlABMPersona ctrlper = new CtrlABMPersona();
+	private ArrayList<Elemento> elementos = new ArrayList(); 
+	private JComboBox cboElementos_1;
 
 	/**
 	 * Launch the application.
 	 */
 	public void start() {
-		ctrl = new CtrlABMReserva();
 
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
@@ -83,7 +88,7 @@ public class AMBCReserva extends JFrame {
 	@SuppressWarnings("unchecked")
 	public AMBCReserva() {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setBounds(100, 100, 419, 394);
+		setBounds(100, 100, 500, 422);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setContentPane(contentPane);
@@ -92,8 +97,8 @@ public class AMBCReserva extends JFrame {
 
 		JComboBox cboTipos = new JComboBox();
 		cboTipos.setModel(new DefaultComboBoxModel<TipoElemento>(ctrltipo.loadtipos().toArray(new TipoElemento[0])));
-		cboTipos.setSelectedItem(null);;
-		JComboBox cboElementos = new JComboBox();
+		cboTipos.setSelectedItem(null);
+		cboElementos_1 = new JComboBox();
 
 		class CategoryListCellRenderer extends DefaultListCellRenderer {
 
@@ -110,21 +115,19 @@ public class AMBCReserva extends JFrame {
 
 		}
 		
-		cboElementos.setRenderer(new CategoryListCellRenderer());
+		cboElementos_1.setRenderer(new CategoryListCellRenderer());
 		
 		cboTipos.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				TipoElemento tipoItemActual = (TipoElemento) cboTipos.getSelectedItem();
-				cboElementos.removeAllItems();
-				cboElementos.setModel(loadele(tipoItemActual));
+				elementos = ctrlelemento.getElementos(tipoItemActual);
+				ctrl.initDataBindings(elementos, cboElementos_1);
+				
+				
 
 			}
 			
-			public DefaultComboBoxModel loadele(TipoElemento tipoItemActual) {
-				DefaultComboBoxModel elem = new DefaultComboBoxModel();
-				for (int i = 0; i < ctrlelemento.loadElementos(tipoItemActual).size(); i++) {
-					elem.addElement(ctrlelemento.loadElementos(tipoItemActual).get(i));}
-				return elem;}
+
 
 		});
 
@@ -160,10 +163,10 @@ public class AMBCReserva extends JFrame {
 		txtApellido.setEditable(false);
 		txtApellido.setColumns(10);
 
-		JButton btnGuardar = new JButton("Guardar Reserva");
+		JButton btnGuardar = new JButton("Guardar");
 		btnGuardar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				guardarClick(cboElementos.getSelectedIndex());
+				guardarClick((Elemento) cboElementos_1.getSelectedItem());
 			}
 		});
 		btnGuardar.addMouseListener(new MouseAdapter() {
@@ -172,7 +175,7 @@ public class AMBCReserva extends JFrame {
 
 		this.mapearUsuarioLogueado(ctrlper.getLogged());
 		
-		JLabel lblYyyymmdd = new JLabel("yyyy-mm-dd");
+		JLabel lblYyyymmdd = new JLabel("dd/MM/yyyy HH:mm");
 
 		GroupLayout gl_contentPane = new GroupLayout(contentPane);
 		gl_contentPane.setHorizontalGroup(
@@ -180,55 +183,61 @@ public class AMBCReserva extends JFrame {
 				.addGroup(gl_contentPane.createSequentialGroup()
 					.addContainerGap()
 					.addGroup(gl_contentPane.createParallelGroup(Alignment.LEADING)
-						.addComponent(lblNombre)
-						.addComponent(lblApellido)
-						.addComponent(lblIdReserva)
-						.addComponent(lblTipo)
-						.addComponent(lblElemento)
-						.addComponent(lblFechahora)
-						.addComponent(lblNewLabel))
-					.addGap(30)
-					.addGroup(gl_contentPane.createParallelGroup(Alignment.LEADING)
 						.addGroup(gl_contentPane.createSequentialGroup()
-							.addComponent(txtId_reserva, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
-							.addContainerGap())
+							.addGroup(gl_contentPane.createParallelGroup(Alignment.LEADING)
+								.addComponent(lblTipo)
+								.addComponent(lblElemento)
+								.addComponent(lblFechahora)
+								.addComponent(lblNewLabel)
+								.addComponent(lblNombre)
+								.addComponent(lblApellido)
+								.addComponent(lblIdReserva))
+							.addGap(30)
+							.addGroup(gl_contentPane.createParallelGroup(Alignment.LEADING)
+								.addGroup(gl_contentPane.createSequentialGroup()
+									.addComponent(txtId_reserva, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+									.addContainerGap())
+								.addGroup(gl_contentPane.createParallelGroup(Alignment.LEADING)
+									.addGroup(gl_contentPane.createSequentialGroup()
+										.addGroup(gl_contentPane.createParallelGroup(Alignment.TRAILING, false)
+											.addComponent(txtNombre, Alignment.LEADING)
+											.addComponent(txtApellido, Alignment.LEADING, GroupLayout.PREFERRED_SIZE, 124, GroupLayout.PREFERRED_SIZE))
+										.addContainerGap())
+									.addGroup(gl_contentPane.createParallelGroup(Alignment.LEADING)
+										.addGroup(gl_contentPane.createSequentialGroup()
+											.addComponent(txtDescripcion, GroupLayout.PREFERRED_SIZE, 260, GroupLayout.PREFERRED_SIZE)
+											.addContainerGap())
+										.addGroup(gl_contentPane.createParallelGroup(Alignment.LEADING)
+											.addGroup(gl_contentPane.createSequentialGroup()
+												.addComponent(cboTipos, 0, 222, Short.MAX_VALUE)
+												.addGap(130))
+											.addGroup(gl_contentPane.createSequentialGroup()
+												.addComponent(cboElementos_1, 0, 222, Short.MAX_VALUE)
+												.addGap(130))
+											.addGroup(gl_contentPane.createSequentialGroup()
+												.addComponent(txtFechaHora, GroupLayout.PREFERRED_SIZE, 129, GroupLayout.PREFERRED_SIZE)
+												.addPreferredGap(ComponentPlacement.UNRELATED)
+												.addComponent(lblYyyymmdd)
+												.addContainerGap()))))))
 						.addGroup(Alignment.TRAILING, gl_contentPane.createSequentialGroup()
-							.addComponent(cboTipos, 0, 141, Short.MAX_VALUE)
-							.addGap(130))
-						.addGroup(Alignment.TRAILING, gl_contentPane.createSequentialGroup()
-							.addGroup(gl_contentPane.createParallelGroup(Alignment.TRAILING)
-								.addComponent(btnGuardar, GroupLayout.PREFERRED_SIZE, 122, GroupLayout.PREFERRED_SIZE)
-								.addComponent(cboElementos, 0, 141, Short.MAX_VALUE))
-							.addGap(130))
-						.addGroup(gl_contentPane.createSequentialGroup()
-							.addComponent(txtFechaHora, GroupLayout.PREFERRED_SIZE, 129, GroupLayout.PREFERRED_SIZE)
-							.addGap(18)
-							.addComponent(lblYyyymmdd)
-							.addContainerGap())
-						.addGroup(gl_contentPane.createSequentialGroup()
-							.addGroup(gl_contentPane.createParallelGroup(Alignment.TRAILING, false)
-								.addComponent(txtNombre, Alignment.LEADING)
-								.addComponent(txtApellido, Alignment.LEADING, GroupLayout.DEFAULT_SIZE, 124, Short.MAX_VALUE))
-							.addContainerGap())
-						.addGroup(Alignment.TRAILING, gl_contentPane.createSequentialGroup()
-							.addComponent(txtDescripcion, GroupLayout.PREFERRED_SIZE, 187, GroupLayout.PREFERRED_SIZE)
-							.addGap(84))))
+							.addComponent(btnGuardar, GroupLayout.PREFERRED_SIZE, 105, GroupLayout.PREFERRED_SIZE)
+							.addGap(166))))
 		);
 		gl_contentPane.setVerticalGroup(
-			gl_contentPane.createParallelGroup(Alignment.TRAILING)
+			gl_contentPane.createParallelGroup(Alignment.LEADING)
 				.addGroup(gl_contentPane.createSequentialGroup()
 					.addGap(23)
 					.addGroup(gl_contentPane.createParallelGroup(Alignment.BASELINE)
-						.addComponent(lblNombre)
-						.addComponent(txtNombre, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
+						.addComponent(txtNombre, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+						.addComponent(lblNombre))
 					.addGap(18)
 					.addGroup(gl_contentPane.createParallelGroup(Alignment.BASELINE)
-						.addComponent(lblApellido)
-						.addComponent(txtApellido, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
+						.addComponent(txtApellido, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+						.addComponent(lblApellido))
 					.addGap(18)
 					.addGroup(gl_contentPane.createParallelGroup(Alignment.BASELINE)
-						.addComponent(lblIdReserva)
-						.addComponent(txtId_reserva, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
+						.addComponent(txtId_reserva, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE)
+						.addComponent(lblIdReserva))
 					.addGap(24)
 					.addGroup(gl_contentPane.createParallelGroup(Alignment.BASELINE)
 						.addComponent(lblTipo)
@@ -236,7 +245,7 @@ public class AMBCReserva extends JFrame {
 					.addGap(18)
 					.addGroup(gl_contentPane.createParallelGroup(Alignment.BASELINE)
 						.addComponent(lblElemento)
-						.addComponent(cboElementos, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
+						.addComponent(cboElementos_1, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
 					.addPreferredGap(ComponentPlacement.UNRELATED)
 					.addGroup(gl_contentPane.createParallelGroup(Alignment.BASELINE)
 						.addComponent(lblFechahora)
@@ -248,9 +257,10 @@ public class AMBCReserva extends JFrame {
 						.addComponent(txtDescripcion, GroupLayout.PREFERRED_SIZE, 53, GroupLayout.PREFERRED_SIZE))
 					.addGap(18)
 					.addComponent(btnGuardar)
-					.addContainerGap(GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+					.addContainerGap(30, Short.MAX_VALUE))
 		);
 		contentPane.setLayout(gl_contentPane);
+		initDataBindings();
 
 	}
 
@@ -259,19 +269,34 @@ public class AMBCReserva extends JFrame {
 		this.txtApellido.setText(per.getApellido());
 	}
 
-	protected void guardarClick(int i) {
-		ctrl.add(this.mapearDeForm(i));
+	protected void guardarClick(Elemento ele) {
+		ctrl.add(this.mapearDeForm(ele));
 		// TODO Auto-generated method stub
 	}
 
-	public Reserva mapearDeForm(int index) {
-		DateFormat dateFormat = new SimpleDateFormat(txtFechaHora.getText());
+	public Reserva mapearDeForm(Elemento ele) {
+		SimpleDateFormat f= new SimpleDateFormat("dd/MM/yyyy HH:mm");
 		Reserva res = new Reserva();
 		res.setDescripcion(this.txtDescripcion.getText());
 		res.setPersona(ctrlper.getLogged());
-		res.setElemento((Elemento) cboElementos.getModel().getSelectedItem());//arreglar esta linea
-		res.setFecha_hora(dateFormat);
+		res.setElemento(ele);
+		java.util.Date fechaHora = null;
+		try {
+			fechaHora = f.parse(this.txtFechaHora.getText());
+		} catch (ParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		res.setFecha_hora(fechaHora);
 
 		return res;
 	}
+	protected void initDataBindings() {
+		JComboBoxBinding<Elemento,List<Elemento>,JComboBox> jComboBinding = SwingBindings.createJComboBoxBinding(UpdateStrategy.READ_WRITE, elementos, cboElementos_1, "elementosDeUnTipo");
+		jComboBinding.bind();
+	}
+	
+
+
+	
 }

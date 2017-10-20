@@ -64,6 +64,12 @@ public class PrincipalDestkop extends JFrame {
 		
 		
 		JMenuItem mntmRealizarReserva = new JMenuItem("Reservas Pendientes");
+		mntmRealizarReserva.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				cr = new CtrlABMReserva();
+				cr.reservasDePer();
+			}
+		});
 		mnReservas.add(mntmRealizarReserva);
 		
 		JMenu mnAdministrar = new JMenu("Administrar");
