@@ -25,6 +25,8 @@ import java.awt.event.MouseEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 import javax.swing.JComboBox;
+import javax.swing.JTextArea;
+import javax.swing.JPasswordField;
 
 public class AMBCPersona extends JFrame {
 
@@ -38,6 +40,8 @@ public class AMBCPersona extends JFrame {
 	private JTextField txtID_persona;
 	public Persona ultpersona = new Persona();
 	private JComboBox cboCategoria;
+	private JTextField txtUser;
+	private JPasswordField txtPasswordField;
 
 	/**
 	 * Launch the application.
@@ -61,7 +65,7 @@ public class AMBCPersona extends JFrame {
 	@SuppressWarnings("rawtypes")
 	public AMBCPersona() {
 		setTitle("ABMC de Personas by Nadina, Catriel, Julian");
-		setBounds(100, 100, 405, 381);
+		setBounds(100, 100, 405, 420);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setContentPane(contentPane);
@@ -136,6 +140,15 @@ public class AMBCPersona extends JFrame {
 		JLabel lblCategoria = new JLabel("Categoria");
 		
 		cboCategoria = new JComboBox();
+		
+		JLabel lblUsuario = new JLabel("Usuario");
+		
+		JLabel lblContrasea = new JLabel("Contrase\u00F1a");
+		
+		txtUser = new JTextField();
+		txtUser.setColumns(10);
+		
+		txtPasswordField = new JPasswordField();
 		GroupLayout gl_contentPane = new GroupLayout(contentPane);
 		gl_contentPane.setHorizontalGroup(
 			gl_contentPane.createParallelGroup(Alignment.LEADING)
@@ -148,9 +161,11 @@ public class AMBCPersona extends JFrame {
 								.addComponent(lblNombre)
 								.addComponent(lblDni)
 								.addComponent(lblCategoria)
-								.addComponent(lblApellido, GroupLayout.PREFERRED_SIZE, 71, GroupLayout.PREFERRED_SIZE))
+								.addComponent(lblApellido, GroupLayout.PREFERRED_SIZE, 71, GroupLayout.PREFERRED_SIZE)
+								.addComponent(lblUsuario))
 							.addPreferredGap(ComponentPlacement.RELATED)
 							.addGroup(gl_contentPane.createParallelGroup(Alignment.LEADING)
+								.addComponent(txtUser, GroupLayout.DEFAULT_SIZE, 209, Short.MAX_VALUE)
 								.addGroup(gl_contentPane.createSequentialGroup()
 									.addComponent(txtDni, GroupLayout.PREFERRED_SIZE, 126, GroupLayout.PREFERRED_SIZE)
 									.addGap(18)
@@ -161,15 +176,21 @@ public class AMBCPersona extends JFrame {
 									.addComponent(txtApellido, Alignment.LEADING, 201, 209, Short.MAX_VALUE)
 									.addComponent(txtNombre, Alignment.LEADING, GroupLayout.DEFAULT_SIZE, 209, Short.MAX_VALUE))))
 						.addGroup(gl_contentPane.createSequentialGroup()
-							.addComponent(chkHabilitado)
-							.addPreferredGap(ComponentPlacement.RELATED))
+							.addComponent(lblContrasea)
+							.addGap(18)
+							.addComponent(txtPasswordField, GroupLayout.DEFAULT_SIZE, 210, Short.MAX_VALUE)))
+					.addGap(208))
+				.addGroup(gl_contentPane.createSequentialGroup()
+					.addGap(67)
+					.addGroup(gl_contentPane.createParallelGroup(Alignment.LEADING)
 						.addGroup(gl_contentPane.createSequentialGroup()
 							.addComponent(btnAgregar)
-							.addPreferredGap(ComponentPlacement.RELATED, 45, Short.MAX_VALUE)
+							.addGap(18)
 							.addComponent(btnBorrar)
-							.addGap(30)
-							.addComponent(btnModificar)))
-					.addGap(208))
+							.addGap(18)
+							.addComponent(btnModificar))
+						.addComponent(chkHabilitado))
+					.addContainerGap(67, Short.MAX_VALUE))
 		);
 		gl_contentPane.setVerticalGroup(
 			gl_contentPane.createParallelGroup(Alignment.LEADING)
@@ -195,14 +216,22 @@ public class AMBCPersona extends JFrame {
 					.addGroup(gl_contentPane.createParallelGroup(Alignment.BASELINE)
 						.addComponent(lblCategoria)
 						.addComponent(cboCategoria, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
-					.addGap(31)
+					.addGap(28)
+					.addGroup(gl_contentPane.createParallelGroup(Alignment.BASELINE)
+						.addComponent(lblUsuario)
+						.addComponent(txtUser, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
+					.addGap(18)
+					.addGroup(gl_contentPane.createParallelGroup(Alignment.BASELINE)
+						.addComponent(lblContrasea)
+						.addComponent(txtPasswordField, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, GroupLayout.PREFERRED_SIZE))
+					.addGap(29)
 					.addComponent(chkHabilitado)
 					.addGap(18)
 					.addGroup(gl_contentPane.createParallelGroup(Alignment.BASELINE)
 						.addComponent(btnAgregar)
-						.addComponent(btnModificar)
-						.addComponent(btnBorrar))
-					.addContainerGap(59, Short.MAX_VALUE))
+						.addComponent(btnBorrar)
+						.addComponent(btnModificar))
+					.addContainerGap(44, Short.MAX_VALUE))
 		);
 		contentPane.setLayout(gl_contentPane);
 		loadLists();
@@ -252,6 +281,7 @@ public class AMBCPersona extends JFrame {
 		}
 	}
 	
+	@SuppressWarnings("deprecation")
 	private Persona mapearDeForm(){
 		Persona p=new Persona();
 		if(!this.txtID_persona.getText().isEmpty()){
@@ -261,6 +291,8 @@ public class AMBCPersona extends JFrame {
 		p.setNombre(this.txtNombre.getText());
 		p.setApellido(this.txtApellido.getText());
 		p.setHabilitado(this.chkHabilitado.isSelected());
+		p.setUsuario(this.txtUser.getText());
+		p.setContraseña(this.txtPasswordField.getText());
 		if (cboCategoria.getSelectedIndex() != -1){
 			p.setCategoria((Categoria)this.cboCategoria.getSelectedItem());
 		}
@@ -277,7 +309,8 @@ public class AMBCPersona extends JFrame {
 		this.txtDni.setText("");
 		this.chkHabilitado.setSelected(false);
 		this.txtID_persona.setText("");
-		this.cboCategoria.removeAll();;
+		this.cboCategoria.removeAll();
+		this.txtUser.setText("");
+		this.txtPasswordField.setText("");
 	}
-	
 }

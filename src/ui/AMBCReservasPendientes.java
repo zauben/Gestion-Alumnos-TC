@@ -32,8 +32,6 @@ import java.util.List;
 
 import org.jdesktop.swingbinding.SwingBindings;
 
-import com.sun.prism.paint.Color;
-
 import org.jdesktop.beansbinding.AutoBinding.UpdateStrategy;
 import javax.swing.JTable;
 import org.jdesktop.swingbinding.JTableBinding;

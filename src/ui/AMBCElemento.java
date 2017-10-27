@@ -183,6 +183,7 @@ public class AMBCElemento extends JFrame {
 
 	protected void borrarClick() {
 		ctrl.delete(this.mapearDeForm());
+		this.clearScreen();
 	}
 
 	protected void modificarClick() {
@@ -191,6 +192,14 @@ public class AMBCElemento extends JFrame {
 
 	protected void agregarClick() {
 		ctrl.add(this.mapearDeForm());
+		this.clearScreen();
+		
+	}
+
+	private void clearScreen() {
+		this.txtNombre.setText("");
+		this.cboTipo.setSelectedIndex(-1);
+		
 		
 	}
 

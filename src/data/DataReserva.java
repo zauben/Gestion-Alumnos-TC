@@ -1,10 +1,12 @@
 package data;
 
-import java.sql.Date;
+import java.util.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 
 import entity.Elemento;
@@ -50,7 +52,10 @@ public class DataReserva {
 	}
 	
 public ArrayList<Reserva> getReservasdePer(Persona per){ //OBTENER RESERVAS POR PERSONA
-		
+	DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+	java.util.Date date = new Date();
+	
+	
 	PreparedStatement stmt=null;
 		ResultSet rs=null;
 		ArrayList<Reserva> reservas= new ArrayList<Reserva>();
@@ -58,10 +63,11 @@ public ArrayList<Reserva> getReservasdePer(Persona per){ //OBTENER RESERVAS POR 
 			stmt = FactoryConexion.getInstancia().getConn()
 					.prepareStatement("select * from reserva r "
 		 			+ "inner join elemento e on r.id_elemento=e.id_elemento "
-		 			+ "where id_persona = ?",
+		 			+ "where id_persona = ? and fecha_hora > ?",
 		 			PreparedStatement.RETURN_GENERATED_KEYS);
 			
 			stmt.setInt(1, per.getId_persona());
+			stmt.setString(2, dateFormat.format(date));
 			
 			
 			rs = stmt.executeQuery();

@@ -87,7 +87,7 @@ public class AMBCReserva extends JFrame {
 	 */
 	@SuppressWarnings("unchecked")
 	public AMBCReserva() {
-		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		setBounds(100, 100, 500, 422);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
@@ -204,9 +204,6 @@ public class AMBCReserva extends JFrame {
 											.addComponent(txtApellido, Alignment.LEADING, GroupLayout.PREFERRED_SIZE, 124, GroupLayout.PREFERRED_SIZE))
 										.addContainerGap())
 									.addGroup(gl_contentPane.createParallelGroup(Alignment.LEADING)
-										.addGroup(gl_contentPane.createSequentialGroup()
-											.addComponent(txtDescripcion, GroupLayout.PREFERRED_SIZE, 260, GroupLayout.PREFERRED_SIZE)
-											.addContainerGap())
 										.addGroup(gl_contentPane.createParallelGroup(Alignment.LEADING)
 											.addGroup(gl_contentPane.createSequentialGroup()
 												.addComponent(cboTipos, 0, 222, Short.MAX_VALUE)
@@ -218,10 +215,13 @@ public class AMBCReserva extends JFrame {
 												.addComponent(txtFechaHora, GroupLayout.PREFERRED_SIZE, 129, GroupLayout.PREFERRED_SIZE)
 												.addPreferredGap(ComponentPlacement.UNRELATED)
 												.addComponent(lblYyyymmdd)
-												.addContainerGap()))))))
+												.addContainerGap()))
+										.addGroup(gl_contentPane.createSequentialGroup()
+											.addComponent(txtDescripcion, GroupLayout.PREFERRED_SIZE, 260, GroupLayout.PREFERRED_SIZE)
+											.addContainerGap())))))
 						.addGroup(Alignment.TRAILING, gl_contentPane.createSequentialGroup()
 							.addComponent(btnGuardar, GroupLayout.PREFERRED_SIZE, 105, GroupLayout.PREFERRED_SIZE)
-							.addGap(166))))
+							.addGap(174))))
 		);
 		gl_contentPane.setVerticalGroup(
 			gl_contentPane.createParallelGroup(Alignment.LEADING)
@@ -271,8 +271,11 @@ public class AMBCReserva extends JFrame {
 
 	protected void guardarClick(Elemento ele) {
 		ctrl.add(this.mapearDeForm(ele));
+		this.dispose();
 		// TODO Auto-generated method stub
 	}
+
+
 
 	public Reserva mapearDeForm(Elemento ele) {
 		SimpleDateFormat f= new SimpleDateFormat("dd/MM/yyyy HH:mm");
@@ -295,8 +298,4 @@ public class AMBCReserva extends JFrame {
 		JComboBoxBinding<Elemento,List<Elemento>,JComboBox> jComboBinding = SwingBindings.createJComboBoxBinding(UpdateStrategy.READ_WRITE, elementos, cboElementos_1, "elementosDeUnTipo");
 		jComboBinding.bind();
 	}
-	
-
-
-	
 }
