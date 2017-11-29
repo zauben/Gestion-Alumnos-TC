@@ -19,19 +19,17 @@ public class DataElemento {
 		ArrayList<Elemento> elem= new ArrayList<>();
 		try {
 			stmt=FactoryConexion.getInstancia().getConn().prepareStatement(
-			"select * from elemento e "
-			+ "inner join tipoelemento t on e.id_tipo=t.id_tipo "
-			+ " where t.nombre = ?");
-			stmt.setString(1, tipoel.getNombre());
+			"select * from elemento "
+			+ "where id_tipo = ?");
+			stmt.setInt(1, tipoel.getId_tipo());
 			rs=stmt.executeQuery();
 			if(rs!=null && rs.next()){
+				while(rs.next()){
 					el=new Elemento();
-		 			el.setTipoElemento(new TipoElemento());
 		 			el.setId_elemento(rs.getInt("id_elemento"));
-		 			el.setNombre(rs.getString("e.nombre"));
-		 			el.getTipoElemento().setId_tipo(rs.getInt("id_tipo"));
-		 			el.getTipoElemento().setNombre(rs.getString("t.nombre"));
-		 			elem.add(el);
+		 			el.setNombre(rs.getString("nombre"));
+		 			el.setTipoElemento(tipoel);
+		 			elem.add(el);}
 				}
 			
 		} catch (SQLException e) {

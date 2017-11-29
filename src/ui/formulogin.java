@@ -84,7 +84,10 @@ public class formulogin extends JFrame {
 				Persona p = new Persona ();
 				p = mapearDeForm();
 				Boolean valido = ctrl.validarUSR(p);
-				if (valido==true) {ctrl.principalFrame(); contentPane.setVisible(false);} else {
+				if (valido==true) {
+					ctrl.principalFrame(); 
+					dispose();} 
+				else {
 					JOptionPane.showMessageDialog(contentPane, "Usuario erroneo o no habilitado, intente nuevamente");
 					cleanscreen();
 				}				

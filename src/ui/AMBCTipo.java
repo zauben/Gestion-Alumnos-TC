@@ -13,6 +13,7 @@ import entity.TipoElemento;
 import javax.swing.GroupLayout;
 import javax.swing.GroupLayout.Alignment;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JTextField;
 import javax.swing.LayoutStyle.ComponentPlacement;
 import javax.swing.JButton;
@@ -61,7 +62,7 @@ public class AMBCTipo extends JFrame {
 	 * Create the frame.
 	 */
 	public AMBCTipo() {
-		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		setBounds(100, 100, 391, 329);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
@@ -249,11 +250,17 @@ public class AMBCTipo extends JFrame {
 	}
 
 	private void mapearAForm(TipoElemento te){
+		if (te!=null) {
 		this.txtId.setText(String.valueOf(te.getId_tipo()));
 		this.txtNombre.setText(te.getNombre());
 		this.txtCantidadMax.setText(String.valueOf(te.getCantMaxima()));
 		this.txtTiempoMax.setText(String.valueOf(te.getTiempoMax()));
-		this.txtDias.setText(String.valueOf(te.getDiasAnticipacion()));
+		this.txtDias.setText(String.valueOf(te.getDiasAnticipacion()));}
+		else {
+			JOptionPane.showMessageDialog(contentPane, "No se ha encontrado un tipo de elemento para el nombre ingresado.");
+			this.cleanscreen();
+			}
+		
 	}
 	
 	private TipoElemento mapearDeForm(){

@@ -79,6 +79,10 @@ public ArrayList<Reserva> reservasDePer(Persona logged) {
 	
 }
 
+public void cancelarReservas(Persona logged) {
+	dataRes.CancelarReservasDePersona(logged);
+}
+
 
 
 }	

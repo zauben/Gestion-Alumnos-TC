@@ -185,5 +185,31 @@ public ArrayList<Reserva> getReservasdePer(Persona per){ //OBTENER RESERVAS POR 
 			ex.printStackTrace();
 		}
 	}
+
+	public void CancelarReservasDePersona(Persona logged) {
+		PreparedStatement stmt=null;
+		ResultSet keyResultSet=null;
+		try {
+			stmt=FactoryConexion.getInstancia().getConn()
+					.prepareStatement(
+					"DELETE FROM reserva where id_persona=?",
+					PreparedStatement.RETURN_GENERATED_KEYS
+					);
+			stmt.setInt(1, logged.getId_persona());
+			stmt.executeUpdate();
+			keyResultSet=stmt.getGeneratedKeys();
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		try {
+			if(keyResultSet!=null)keyResultSet.close();
+			if(stmt!=null)stmt.close();
+			FactoryConexion.getInstancia().releaseConn();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		
+	}
 	
 }

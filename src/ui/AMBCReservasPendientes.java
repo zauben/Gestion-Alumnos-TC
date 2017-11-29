@@ -36,6 +36,12 @@ import org.jdesktop.beansbinding.AutoBinding.UpdateStrategy;
 import javax.swing.JTable;
 import org.jdesktop.swingbinding.JTableBinding;
 import org.jdesktop.beansbinding.BeanProperty;
+import java.awt.Panel;
+import javax.swing.JMenuBar;
+import javax.swing.JMenuItem;
+import javax.swing.JMenu;
+import java.awt.event.ActionListener;
+import java.awt.event.ActionEvent;
 
 public class AMBCReservasPendientes extends JFrame {
 
@@ -45,9 +51,8 @@ public class AMBCReservasPendientes extends JFrame {
 
 	private CtrlABMReserva ctrl = new CtrlABMReserva();
 	private CtrlABMElemento ctrlelemento = new CtrlABMElemento();
-
 	private ArrayList<Reserva> reservas = new ArrayList();
-
+	private JFrame frame = new JFrame();
 	/**
 	 * Launch the application.
 	 */
@@ -69,7 +74,7 @@ public class AMBCReservasPendientes extends JFrame {
 	}
 
 	private ArrayList<Persona> pers;
-	CtrlABMPersona ctrlper= new CtrlABMPersona();
+	CtrlABMPersona ctrlPer= new CtrlABMPersona();
 	
 	private JTable table;
 
@@ -77,8 +82,9 @@ public class AMBCReservasPendientes extends JFrame {
 	 * Create the frame.
 	 */
 	public AMBCReservasPendientes() {
+		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 
-		setBounds(100, 100, 507, 300);
+		setBounds(100, 100, 507, 329);
 		
 		JScrollPane scrollPane = new JScrollPane();
 		
@@ -102,10 +108,32 @@ public class AMBCReservasPendientes extends JFrame {
 		
 		table = new JTable();
 		scrollPane.setViewportView(table);
+		
+		Panel panel = new Panel();
+		scrollPane.setColumnHeaderView(panel);
+		
+		JMenuBar menuBar = new JMenuBar();
+		setJMenuBar(menuBar);
+		
+		JMenu mnAcciones = new JMenu("Acciones");
+		menuBar.add(mnAcciones);
+		
+		JMenuItem mntmCancelarReservas = new JMenuItem("Cancelar Reservas");
+		mntmCancelarReservas.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+			ctrl.cancelarReservas(ctrlPer.getLogged());
+			JOptionPane.showMessageDialog(frame, "Las reservas se han cancelado correctamente.");
+			dispose();
+			}
+		});
+		mnAcciones.add(mntmCancelarReservas);
+		
+		JMenuItem mntmSalir = new JMenuItem("Salir");
+		mnAcciones.add(mntmSalir);
 
 		
 		try{
-			reservas = ctrl.reservasDePer(ctrlper.getLogged());
+			reservas = ctrl.reservasDePer(ctrlPer.getLogged());
 		} catch (Exception e){
 			JOptionPane.showMessageDialog(this,e.getMessage(),"Error",JOptionPane.ERROR_MESSAGE);
 	

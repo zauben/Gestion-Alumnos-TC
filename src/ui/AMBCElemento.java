@@ -22,9 +22,15 @@ import javax.swing.JButton;
 import javax.swing.LayoutStyle.ComponentPlacement;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.swing.JComboBox;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
+import org.jdesktop.swingbinding.JComboBoxBinding;
+import org.jdesktop.swingbinding.SwingBindings;
+import org.jdesktop.beansbinding.AutoBinding.UpdateStrategy;
 
 public class AMBCElemento extends JFrame {
 
@@ -36,6 +42,8 @@ public class AMBCElemento extends JFrame {
 	private JTextField txtId;
 	private JTextField txtNombre;
 	private JComboBox cboTipo;
+	private ArrayList<TipoElemento> tipoElementos = new ArrayList(); 
+	
 	
 
 	/**
@@ -77,7 +85,7 @@ public class AMBCElemento extends JFrame {
 		JButton btnAgregar = new JButton("Agregar");
 		btnAgregar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				agregarClick();
+				agregarClick((TipoElemento) cboTipo.getSelectedItem());
 			}
 		});
 		btnAgregar.addMouseListener(new MouseAdapter() {
@@ -89,7 +97,7 @@ public class AMBCElemento extends JFrame {
 		btnModificar.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
-				modificarClick();
+				modificarClick((TipoElemento) cboTipo.getSelectedItem());
 			}
 		});
 		
@@ -97,7 +105,7 @@ public class AMBCElemento extends JFrame {
 		btnBorrar.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
-				borrarClick();
+				borrarClick((TipoElemento) cboTipo.getSelectedItem());
 			}
 		});
 		
@@ -112,7 +120,8 @@ public class AMBCElemento extends JFrame {
 		JLabel lblTipo = new JLabel("Tipo de Elemento");
 		
 		cboTipo = new JComboBox();
-		cboTipo.setModel(this.loadtipos());
+		tipoElementos = ctrltipo.getTipos();
+		initDataBindings(tipoElementos, cboTipo);
 		
 		GroupLayout gl_contentPane = new GroupLayout(contentPane);
 		gl_contentPane.setHorizontalGroup(
@@ -176,22 +185,22 @@ public class AMBCElemento extends JFrame {
 					.addContainerGap(22, Short.MAX_VALUE))
 		);
 		contentPane.setLayout(gl_contentPane);
-		
+				
 	}
 
 	
 
-	protected void borrarClick() {
-		ctrl.delete(this.mapearDeForm());
+	protected void borrarClick(TipoElemento tipoEle) {
+		ctrl.delete(this.mapearDeForm(tipoEle));
 		this.clearScreen();
 	}
 
-	protected void modificarClick() {
-		ctrl.update(this.mapearDeForm());
+	protected void modificarClick(TipoElemento tipoEle) {
+		ctrl.update(this.mapearDeForm(tipoEle));
 	}
 
-	protected void agregarClick() {
-		ctrl.add(this.mapearDeForm());
+	protected void agregarClick(TipoElemento tipoEle) {
+		ctrl.add(this.mapearDeForm(tipoEle));
 		this.clearScreen();
 		
 	}
@@ -220,10 +229,10 @@ public class AMBCElemento extends JFrame {
 	}
 	
 	
-	private Elemento mapearDeForm(){
+	private Elemento mapearDeForm(TipoElemento tipoEle){
 		Elemento e=new Elemento();
 		e.setNombre(this.txtNombre.getText());
-		e.setTipoElemento(ctrl.getByTipo(loadtipos().getSelectedItem().toString()).getTipoElemento());
+		e.setTipoElemento(tipoEle);
 		return e;
 	}
 	
@@ -231,15 +240,9 @@ public class AMBCElemento extends JFrame {
 		this.mapearAForm(e);
 	}
 	
-	public DefaultComboBoxModel loadtipos() {
-		DefaultComboBoxModel tipos = new DefaultComboBoxModel();
-		for (int i = 0; i < ctrltipo.getTipos().size(); i++) {
-			tipos.addElement(ctrltipo.getTipos().get(i).getNombre());}
-		return tipos;}
-	
-	/*public DefaultComboBoxModel loadtipos() {
-		DefaultComboBoxModel tipos = new DefaultComboBoxModel();
-		for (int i = 0; i < ctrltipo.getTipos().size(); i++) {
-			tipos.addElement(ctrltipo.getTipos().get(i).getNombre());}
-		return tipos;}*/
+
+	protected void initDataBindings(ArrayList<TipoElemento> tipoElementos, JComboBox cboTipo) {
+		JComboBoxBinding<TipoElemento, List<TipoElemento>, JComboBox> jComboBinding = SwingBindings.createJComboBoxBinding(UpdateStrategy.READ_WRITE, tipoElementos, cboTipo, "tipoElementos");
+		jComboBinding.bind();
+	}	
 }
