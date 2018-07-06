@@ -6,11 +6,8 @@ public class Alumno extends Persona {
 	private int identificador;
 	private Integer legajo;
 	private Carrera carrera;
-	private ArrayList <Curso> cursosInscripto;
-	
-	
-	
-	
+	private ArrayList<Curso> cursosInscripto;
+
 	public int getIdentificador() {
 		return identificador;
 	}
@@ -18,8 +15,6 @@ public class Alumno extends Persona {
 	public void setIdentificador(int identificador) {
 		this.identificador = identificador;
 	}
-	
-	
 
 	public Carrera getCarrera() {
 		return carrera;
@@ -45,22 +40,17 @@ public class Alumno extends Persona {
 		this.legajo = legajo;
 	}
 
-	public Alumno (String dni, String nombre, String apellido, boolean habilitado){
+	public Alumno(String dni, String nombre, String apellido, boolean habilitado) {
 		this.setDni(dni);
 		this.setNombre(nombre);
 		this.setApellido(apellido);
 	}
-	
-	public Alumno(){}
-	
+
+	public Alumno() {
+	}
+
 	@Override
-	public boolean equals(Object p){
-		return (p instanceof Alumno) &&
-			 (((Alumno)p).getDni().equals(this.getDni()));
+	public boolean equals(Object p) {
+		return (p instanceof Alumno) && (((Alumno) p).getDni().equals(this.getDni()));
 	}
 }
-
-
-
-
-

@@ -1,30 +1,30 @@
 package entity;
 
 public class Curso {
-	
+
 	private int identificador;
 	private Carrera carrera;
 	private String nombre;
 	private String descripcion;
 	private int cupomaximo;
 	private int anio;
-	
+
 	public Curso() {
 	}
 
 	@Override
-	public String toString(){
+	public String toString() {
 		return this.getNombre();
 	}
-	
+
 	@Override
-	public boolean equals(Object o){
-		return (o instanceof Curso && ((Curso)o).getIdentificador()==this.getIdentificador());
+	public boolean equals(Object o) {
+		return (o instanceof Curso && ((Curso) o).getIdentificador() == this.getIdentificador());
 	}
-	
+
 	@Override
-	public int hashCode(){
-		return ((Integer)this.getIdentificador()).hashCode();
+	public int hashCode() {
+		return ((Integer) this.getIdentificador()).hashCode();
 	}
 
 	public int getIdentificador() {
@@ -74,8 +74,5 @@ public class Curso {
 	public void setAnio(int anio) {
 		this.anio = anio;
 	}
-	
-	
-	
-	
+
 }

@@ -1,52 +1,10 @@
 package data;
 
-import java.util.ArrayList;
 import java.sql.*;
 
 import entity.*;
 
 public class DataAlumno {
-
-	public ArrayList<Alumno> getAll() {
-
-		Statement stmt = null;
-		ResultSet rs = null;
-		ArrayList<Alumno> pers = new ArrayList<Alumno>();
-		try {
-			stmt = FactoryConexion.getInstancia().getConn().createStatement();
-			rs = stmt.executeQuery("select * from persona p " + "inner join alumno a on a.idpersona=p.identificador");
-			if (rs != null) {
-				while (rs.next()) {
-					Alumno p = new Alumno();
-					p.setId_persona(rs.getInt("identificador"));
-					p.setNombre(rs.getString("nombre"));
-					p.setApellido(rs.getString("apellido"));
-					p.setDni(rs.getString("documento"));
-					p.setLegajo(rs.getInt("legajo"));
-					p.setTipodoc(rs.getString("tipodoc"));
-					p.setFechaNac(rs.getDate("fechanac"));
-					pers.add(p);
-				}
-			}
-		} catch (SQLException e) {
-
-			e.printStackTrace();
-		}
-
-		try {
-			if (rs != null)
-				rs.close();
-			if (stmt != null)
-				stmt.close();
-			FactoryConexion.getInstancia().releaseConn();
-		} catch (SQLException e) {
-
-			e.printStackTrace();
-		}
-
-		return pers;
-
-	}
 
 	public Alumno getByLegajo(Alumno per) {
 		Alumno p = null;
@@ -54,7 +12,7 @@ public class DataAlumno {
 		ResultSet rs = null;
 		try {
 			stmt = FactoryConexion.getInstancia().getConn().prepareStatement(
-					"select p.identificador, p.nombre AS nombreper, p.apellido, p.documento, a.legajo, p.tipodoc, p.fechanac, "
+					"select p.identificador AS idpersona, a.identificador AS idalumno, p.nombre AS nombreper, p.apellido, p.documento, a.legajo, p.tipodoc, p.fechanac, "
 							+ "ic.idcarrera, c.nombre AS nombrecar from persona p "
 							+ "inner join alumno a on a.idpersona=p.identificador "
 							+ "left join inscripciones_carrera ic ON ic.idalumno = a.identificador "
@@ -69,12 +27,11 @@ public class DataAlumno {
 				p.setLegajo(rs.getInt("legajo"));
 				p.setTipodoc(rs.getString("tipodoc"));
 				p.setFechaNac(rs.getDate("fechanac"));
-				p.setId_persona(rs.getInt("identificador"));
-				p.setIdentificador(rs.getInt("identificador"));
+				p.setId_persona(rs.getInt("idpersona"));
+				p.setIdentificador(rs.getInt("idalumno"));
 				p.setCarrera(new Carrera());
 				p.getCarrera().setIdentificador(rs.getInt("idcarrera"));
 				p.getCarrera().setNombre(rs.getString("nombrecar"));
-				
 
 			}
 
