@@ -9,8 +9,6 @@ import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 
 import controlers.CtrlABMPersona;
-import entity.Persona;
-import util.AppDataException;
 import javax.swing.GroupLayout;
 import javax.swing.GroupLayout.Alignment;
 import javax.swing.JLabel;
@@ -68,22 +66,14 @@ public class formulogin extends JFrame {
 		JButton btnAceptar = new JButton("Iniciar Sesion");
 		btnAceptar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
-				try {
 					iniciarSesion();
-				} catch (AppDataException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
 			}
 				
 			
 			
-			//INICIA SESION DESDE CONTROLERS PERSONA, NO SE SI ESTARA BIEN
-			private void iniciarSesion() throws AppDataException {
+			private void iniciarSesion() {
 				CtrlABMPersona ctrl = new CtrlABMPersona();
-				Persona p = new Persona ();
-				p = mapearDeForm();
-				Boolean valido = ctrl.validarUSR(p);
+				Boolean valido = ctrl.validarUSR(txtUsuario.getText(), txtContraseña.getText());
 				if (valido==true) {
 					ctrl.principalFrame(); 
 					dispose();} 
@@ -134,14 +124,6 @@ public class formulogin extends JFrame {
 		contentPane.setLayout(gl_contentPane);
 	}
 
-	
-	@SuppressWarnings("deprecation")
-	private Persona mapearDeForm(){
-		Persona p=new Persona();
-		p.setUsuario(this.txtUsuario.getText());
-		p.setContraseña(this.txtContraseña.getText());
-		return p;
-	}
 
 	private void cleanscreen(){
 		this.txtUsuario.setText("");

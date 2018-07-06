@@ -9,17 +9,17 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 
-import entity.Elemento;
+import entity.Carrera;
 import entity.Persona;
-import entity.Reserva;
+import entity.InscripcionCurso;
 
-public class DataReserva {
+public class DataInscripcion {
 
-	public ArrayList<Reserva> getAll(){
+	public ArrayList<InscripcionCurso> getAll(){
 		
 		Statement stmt=null;
 		ResultSet rs=null;
-		ArrayList<Reserva> reservas= new ArrayList<Reserva>();
+		ArrayList<InscripcionCurso> inscripcionCursos= new ArrayList<InscripcionCurso>();
 		try {
 			stmt = FactoryConexion.getInstancia()
 					.getConn().createStatement();
@@ -27,14 +27,14 @@ public class DataReserva {
 		 			+ "inner join elemento e on r.id_elemento=e.id_elemento");
 			if(rs!=null){
 				while(rs.next()){
-					Reserva r=new Reserva();
-					r.setElemento(new Elemento());
+					InscripcionCurso r=new InscripcionCurso();
+					r.setElemento(new Carrera());
 					r.setId_reserva(rs.getInt("id_reserva"));
 					//r.setFecha_hora(rs.getString("fecha_hora")); ver
 					r.setDescripcion(rs.getString("descripcion"));
 					r.getElemento().setId_elemento(rs.getInt("id_elemento"));
 		 			r.getElemento().setNombre(rs.getString("e.nombre"));
-		 			reservas.add(r);
+		 			inscripcionCursos.add(r);
 				}
 			}
 		} catch (SQLException e) {
@@ -48,17 +48,17 @@ public class DataReserva {
 		} catch (SQLException e) {	
 			e.printStackTrace();
 		}
-		return reservas;	
+		return inscripcionCursos;	
 	}
 	
-public ArrayList<Reserva> getReservasdePer(Persona per){ //OBTENER RESERVAS POR PERSONA
+public ArrayList<InscripcionCurso> getReservasdePer(Persona per){ //OBTENER RESERVAS POR PERSONA
 	DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
 	java.util.Date date = new Date();
 	
 	
 	PreparedStatement stmt=null;
 		ResultSet rs=null;
-		ArrayList<Reserva> reservas= new ArrayList<Reserva>();
+		ArrayList<InscripcionCurso> inscripcionCursos= new ArrayList<InscripcionCurso>();
 		try {
 			stmt = FactoryConexion.getInstancia().getConn()
 					.prepareStatement("select * from reserva r "
@@ -73,14 +73,14 @@ public ArrayList<Reserva> getReservasdePer(Persona per){ //OBTENER RESERVAS POR 
 			rs = stmt.executeQuery();
 			if(rs!=null){
 				while(rs.next()){
-					Reserva r=new Reserva();
-					r.setElemento(new Elemento());
+					InscripcionCurso r=new InscripcionCurso();
+					r.setElemento(new Carrera());
 					r.setId_reserva(rs.getInt("id_reserva"));
 					r.setFecha_hora(rs.getTimestamp("fecha_hora")); 
 					r.setDescripcion(rs.getString("descripcion"));
 					r.getElemento().setId_elemento(rs.getInt("id_elemento"));
 		 			r.getElemento().setNombre(rs.getString("e.nombre"));
-		 			reservas.add(r);
+		 			inscripcionCursos.add(r);
 				}
 			}
 		} catch (SQLException e) {
@@ -94,27 +94,24 @@ public ArrayList<Reserva> getReservasdePer(Persona per){ //OBTENER RESERVAS POR 
 		} catch (SQLException e) {	
 			e.printStackTrace();
 		}
-		return reservas;	
+		return inscripcionCursos;	
 	}
 	
-	public void add(Reserva r){
+	public void add(InscripcionCurso r){
 		PreparedStatement stmt=null;
 		ResultSet keyResultSet=null;
 		try {
 			stmt=FactoryConexion.getInstancia().getConn()
 					.prepareStatement(
-					"insert into reserva(fecha_hora, descripcion, id_elemento, id_persona) values (?,?,?,?)",
+					"insert into inscripciones_curso(idalumno, idcurso, fechainscripcion) values (?,?,NOW())",
 					PreparedStatement.RETURN_GENERATED_KEYS
 					);
-			stmt.setTimestamp(1, new java.sql.Timestamp(r.getFecha_hora().getTime()));
- 			stmt.setString(2, r.getDescripcion());
- 			stmt.setInt(3, r.getElemento().getId_elemento());
- 			stmt.setInt(4, r.getPersona().getId_persona());
+
+ 			stmt.setInt(1, r.getAlumno().getIdentificador());
+ 			stmt.setInt(2, r.getCurso().getIdentificador());
 			stmt.executeUpdate();
 			keyResultSet=stmt.getGeneratedKeys();
-			if(keyResultSet!=null && keyResultSet.next()){
-				r.setId_reserva(keyResultSet.getInt(1));
-			}
+			
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
@@ -127,7 +124,7 @@ public ArrayList<Reserva> getReservasdePer(Persona per){ //OBTENER RESERVAS POR 
 		}
 	}
 	
-	public void delete(Reserva r){
+	public void delete(InscripcionCurso r){
 		PreparedStatement stmt=null;
 		ResultSet keyResultSet=null;
 		try {
@@ -155,7 +152,7 @@ public ArrayList<Reserva> getReservasdePer(Persona per){ //OBTENER RESERVAS POR 
 	}
 	
 
-	public void update(Reserva r){
+	public void update(InscripcionCurso r){
 		PreparedStatement stmt=null;
 		ResultSet keyResultSet=null;
 		try {

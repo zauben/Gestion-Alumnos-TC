@@ -6,21 +6,21 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 
-import entity.TipoElemento;
+import entity.Curso;
 
-public class DataTipoElemento {
-public ArrayList<TipoElemento> getAll(){
+public class DataCarrera {
+public ArrayList<Curso> getAll(){
 		
 		Statement stmt=null;
 		ResultSet rs=null;
-		ArrayList<TipoElemento> tipos= new ArrayList<TipoElemento>();
+		ArrayList<Curso> tipos= new ArrayList<Curso>();
 		try {
 			stmt = FactoryConexion.getInstancia()
 					.getConn().createStatement();
 			rs = stmt.executeQuery("select * from tipoelemento");
 			if(rs!=null){
 				while(rs.next()){
-					TipoElemento t=new TipoElemento();
+					Curso t=new Curso();
 					t.setId_tipo(rs.getInt("id_tipo"));
 					t.setNombre(rs.getString("nombre"));
 					t.setCantMaxima(rs.getInt("cantMaxima"));
@@ -49,8 +49,8 @@ public ArrayList<TipoElemento> getAll(){
 	}
 	
 	
-	public TipoElemento getByNombre(TipoElemento tipo){
-		TipoElemento t=null;
+	public Curso getByNombre(Curso tipo){
+		Curso t=null;
 		PreparedStatement stmt=null;
 		ResultSet rs=null;
 		try {
@@ -59,7 +59,7 @@ public ArrayList<TipoElemento> getAll(){
 			stmt.setString(1, tipo.getNombre());
 			rs=stmt.executeQuery();
 			if(rs!=null && rs.next()){
-					t=new TipoElemento();
+					t=new Curso();
 					t.setId_tipo(rs.getInt("id_tipo"));
 					t.setNombre(rs.getString("nombre"));
 					t.setCantMaxima(rs.getInt("cantMaxima"));
@@ -85,7 +85,7 @@ public ArrayList<TipoElemento> getAll(){
 	
 	
 	
-	public void add(TipoElemento t){
+	public void add(Curso t){
 		PreparedStatement stmt=null;
 		ResultSet keyResultSet=null;
 		try {
@@ -115,7 +115,7 @@ public ArrayList<TipoElemento> getAll(){
 			ex.printStackTrace();
 		}
 	}
-	public void delete(TipoElemento t){
+	public void delete(Curso t){
 		PreparedStatement stmt=null;
 		ResultSet keyResultSet=null;
 		try {
@@ -142,7 +142,7 @@ public ArrayList<TipoElemento> getAll(){
 		}
 	}
 	
-	public void update(TipoElemento t){
+	public void update(Curso t){
 		PreparedStatement stmt=null;
 		ResultSet keyResultSet=null;
  		try {

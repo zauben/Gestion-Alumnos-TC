@@ -2,34 +2,32 @@ package controlers;
 
 import java.util.ArrayList;
 
-import data.DataCategoria;
-import data.DataPersona;
-import entity.Categoria;
+import data.DataAlumno;
+import entity.Alumno;
 import entity.Persona;
-import ui.AMBCPersona;
+import ui.PantallaGestionAlumno;
 import ui.PrincipalDestkop;
 
 public class CtrlABMPersona {
 
-	private DataPersona dataPer = new DataPersona();
-	private AMBCPersona iuper;
+	private DataAlumno dataPer = new DataAlumno();
+	private PantallaGestionAlumno iuper;
 	private ArrayList<Persona> pers= new ArrayList<Persona>();
 	private PrincipalDestkop pd = new PrincipalDestkop();
-	private DataCategoria dataCat= new DataCategoria();
 		
 	
-	public void add(Persona p) {
+	public void add(Alumno p) {
 		
 				dataPer.add(p);
 	}
 	
-	public void delete(Persona p){
+	public void delete(Alumno p){
 		dataPer.borrar(p);
 	}
 	
-	public void update(Persona newp, Persona oldp){
+	public void update(Alumno oldp){
 		
-		dataPer.actualizar(newp, oldp);
+		dataPer.actualizar(oldp);
 	}
 		
 	/*public Persona getByDni(Persona p){
@@ -44,8 +42,8 @@ public Persona getByDni(String dni){
 	}
 	*/
 	
-	public Persona getByDni(Persona pe) {
-		return this.dataPer.getByDni(pe);
+	public Alumno getByLegajo(Alumno pe) {
+		return this.dataPer.getByLegajo(pe);
 	}
 	
 	public Persona getByNombreApellido(Persona p){
@@ -59,38 +57,26 @@ public Persona getByDni(String dni){
 		return null; 
 	}
 	
-	public ArrayList<Persona> getAll(){
-		dataPer= new DataPersona();
+	public ArrayList<Alumno> getAll(){
+		dataPer= new DataAlumno();
 		//return this.pers;
 		return dataPer.getAll();
 	}
 
-	public void DialogoPersonas() {
-		iuper = new AMBCPersona();
+	public void dialogoAlumnos() {
+		iuper = new PantallaGestionAlumno();
 		iuper.start();
 		// TODO Auto-generated method stub
 		
 	}
 	
 
-	public Boolean validarUSR(Persona p) {
-		dataPer.cleanLoggedUser();
-		return dataPer.validarUsuario(p);
-	}
-
-	public ArrayList<Categoria> getCategorias(){
-		return dataCat.getAll();
+	public Boolean validarUSR(String user, String pass) {
+		return dataPer.validarUsuario(user, pass);
 	}
 
 	public void principalFrame() {
 		pd.start();		
 	}
-
-	public Persona getLogged() {
-		dataPer= new DataPersona();
-		return dataPer.getLogged();
-		
-	}
-
 
 }

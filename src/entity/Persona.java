@@ -1,47 +1,30 @@
 package entity;
 
+import java.util.Date;
+
 public class Persona {
 	private int id_persona;
 	private String nombre;
 	private String apellido;
 	private String dni;
+	private String tipodoc;
+	private Date fechaNac;
 	private String usuario;
-	private String contraseña;
-	private boolean habilitado;
-	private boolean logged;
+	private String pass;
 	
-	public boolean isLogged() {
-		return logged;
-	}
-
-	public void setLogged(boolean logged) {
-		this.logged = logged;
-	}
-
-	private Categoria categoria;
+	public Persona (String dni, String nombre, String apellido, boolean habilitado){
+		this.setDni(dni);
+		this.setNombre(nombre);
+		this.setApellido(apellido);
 		
-	public String getUsuario() {
-		return usuario;
-	}
-
-	public void setUsuario(String usuario) {
-		this.usuario = usuario;
-	}
-
-	public String getContraseña() {
-		return contraseña;
-	}
-
-	public void setContraseña(String contraseña) {
-		this.contraseña = contraseña;
-	}
-
-	public Categoria getCategoria(){
-		return categoria;
 	}
 	
-	public void setCategoria(Categoria categoria){
-		this.categoria=categoria;
+	public Persona(){}
+	
+	@Override
+	public boolean equals(Object p){
+		return (p instanceof Persona) &&
+			 (((Persona)p).getDni().equals(this.getDni()));
 	}
 	
 	public int getId_persona(){
@@ -52,6 +35,38 @@ public class Persona {
 		this.id_persona=id_persona;
 	}
 	
+	public String getUsuario() {
+		return usuario;
+	}
+
+	public void setUsuario(String usuario) {
+		this.usuario = usuario;
+	}
+
+	public String getPass() {
+		return pass;
+	}
+
+	public void setPass(String pass) {
+		this.pass = pass;
+	}
+
+	public String getTipodoc() {
+		return tipodoc;
+	}
+
+	public void setTipodoc(String tipodoc) {
+		this.tipodoc = tipodoc;
+	}
+
+	public Date getFechaNac() {
+		return fechaNac;
+	}
+
+	public void setFechaNac(Date fechaNac) {
+		this.fechaNac = fechaNac;
+	}
+
 	public String getNombre() {
 		return nombre;
 	}
@@ -70,27 +85,8 @@ public class Persona {
 	public void setDni(String dni) {
 		this.dni = dni;
 	}
-	public boolean isHabilitado() {
-		return habilitado;
-	}
-	public void setHabilitado(boolean habilitado) {
-		this.habilitado = habilitado;
-	}
 	
-	public Persona (String dni, String nombre, String apellido, boolean habilitado){
-		this.setDni(dni);
-		this.setNombre(nombre);
-		this.setApellido(apellido);
-		this.setHabilitado(habilitado);
-	}
 	
-	public Persona(){}
-	
-	@Override
-	public boolean equals(Object p){
-		return (p instanceof Persona) &&
-			 (((Persona)p).getDni().equals(this.getDni()));
-	}
 }
 
 

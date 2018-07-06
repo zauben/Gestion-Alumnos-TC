@@ -4,48 +4,48 @@ package controlers;
 import java.util.ArrayList;
 import java.util.List;
 
-import data.DataTipoElemento;
-import entity.TipoElemento;
+import data.DataCarrera;
+import entity.Curso;
 import ui.AMBCTipo;
 
 public class CtrlABMTipo {
 	
-	private DataTipoElemento dataTipo;
+	private DataCarrera dataTipo;
 	private AMBCTipo iuper;
 
 	
 	public CtrlABMTipo(){
-	dataTipo= new DataTipoElemento();
+	dataTipo= new DataCarrera();
 	}
 	
 
-	public void add(TipoElemento t) {
+	public void add(Curso t) {
 		dataTipo.add(t);;
 	}
 	
-	public void delete(TipoElemento t){
+	public void delete(Curso t){
 		dataTipo.delete(t);
 	}
 	
-	public void update(TipoElemento t){
+	public void update(Curso t){
 		dataTipo.update(t);
 	}
 		
-	public TipoElemento getByNombre(TipoElemento t){
+	public Curso getByNombre(Curso t){
 		return this.dataTipo.getByNombre(t);
 	}
 	
-	public TipoElemento getByNombre(String nombre){
-		TipoElemento t=new TipoElemento();
+	public Curso getByNombre(String nombre){
+		Curso t=new Curso();
 		t.setNombre(nombre);
 		return getByNombre(t);
 	}
 	
-	public ArrayList<TipoElemento> getTipos(){
+	public ArrayList<Curso> getTipos(){
 		return dataTipo.getAll();}
 
 
-	public ArrayList<TipoElemento>getAll() throws Exception{
+	public ArrayList<Curso>getAll() throws Exception{
 		return dataTipo.getAll();
 		}
 	
@@ -54,8 +54,8 @@ public class CtrlABMTipo {
 		iuper.start();
 	}
 	
-	public List<TipoElemento> loadtipos() { 
-		java.util.List<TipoElemento> tipos = new java.util.ArrayList<TipoElemento>();
+	public List<Curso> loadtipos() { 
+		java.util.List<Curso> tipos = new java.util.ArrayList<Curso>();
 		tipos.addAll(this.getTipos());
 		return tipos;
 	}

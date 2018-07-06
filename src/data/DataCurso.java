@@ -6,29 +6,34 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 
-import entity.Elemento;
-import entity.TipoElemento;
+import entity.Carrera;
+import entity.Curso;
 
-public class DataElemento {
+public class DataCurso {
 	
 	
-	public ArrayList<Elemento> getAll(TipoElemento tipoel){
-		Elemento el = null;
+	public ArrayList<Curso> getAll(int idcarrera){
+		Curso el = null;
 		PreparedStatement stmt=null;
 		ResultSet rs=null;
-		ArrayList<Elemento> elem= new ArrayList<>();
+		ArrayList<Curso> elem= new ArrayList<>();
 		try {
 			stmt=FactoryConexion.getInstancia().getConn().prepareStatement(
-			"select * from elemento "
-			+ "where id_tipo = ?");
-			stmt.setInt(1, tipoel.getId_tipo());
+			"select * from curso "
+			+ "where idcarrera = ?");
+			stmt.setInt(1, idcarrera);
 			rs=stmt.executeQuery();
 			if(rs!=null && rs.next()){
 				while(rs.next()){
-					el=new Elemento();
-		 			el.setId_elemento(rs.getInt("id_elemento"));
+					el=new Curso();
+		 			el.setIdentificador(rs.getInt("identificador"));
+		 			el.setCarrera(new Carrera());
+		 			el.getCarrera().setIdentificador(idcarrera);
 		 			el.setNombre(rs.getString("nombre"));
-		 			el.setTipoElemento(tipoel);
+		 			el.setDescripcion(rs.getString("descripcion"));
+		 			el.setCupomaximo(rs.getInt("cupomaximo"));
+		 			el.setAnio(rs.getInt("anio"));
+		 			
 		 			elem.add(el);}
 				}
 			
@@ -51,20 +56,20 @@ public class DataElemento {
 	}
 	
 	
-	public Elemento getByElemento(Elemento elem){
-		Elemento e=null;
+	public Carrera getByCarrera(int idcarrera){
+		Carrera e=null;
 		PreparedStatement stmt=null;
 		ResultSet rs=null;
 		try {
 			stmt=FactoryConexion.getInstancia().getConn().prepareStatement(
-					"select id_elemento, e.nombre, e.id_tipo, t.nombre from elemento e "
+					"select id_elemento, e.nombre, e.id_tipo, t.nombre from carrera e "
 					+ "inner join tipoelemento t on e.id_tipo=t.id_tipo "
 					+ "where e.nombre=?");
 			stmt.setString(1, elem.getNombre());
 			rs=stmt.executeQuery();
 			if(rs!=null && rs.next()){
-					e=new Elemento();
-					e.setTipoElemento(new TipoElemento());
+					e=new Carrera();
+					e.setTipoElemento(new Curso());
 					e.setId_elemento(rs.getInt("id_elemento"));
 					e.setNombre(rs.getString("e.nombre"));
 					e.getTipoElemento().setId_tipo(rs.getInt("id_tipo"));
@@ -86,8 +91,8 @@ public class DataElemento {
 		return e;
 	}
 	
-	public Elemento getByNombre(String elem){
-		Elemento e=null;
+	public Carrera getByNombre(String elem){
+		Carrera e=null;
 		PreparedStatement stmt=null;
 		ResultSet rs=null;
 		try {
@@ -98,8 +103,8 @@ public class DataElemento {
 			stmt.setString(1, elem);
 			rs=stmt.executeQuery();
 			if(rs!=null && rs.next()){
-					e=new Elemento();
-					e.setTipoElemento(new TipoElemento());
+					e=new Carrera();
+					e.setTipoElemento(new Curso());
 					e.setId_elemento(rs.getInt("id_elemento"));
 					e.setNombre(rs.getString("e.nombre"));
 					e.getTipoElemento().setId_tipo(rs.getInt("id_tipo"));
@@ -121,8 +126,8 @@ public class DataElemento {
 		return e;
 	}
 	
-	public Elemento getByTipo(String tipo){
-		Elemento e= new Elemento();
+	public Carrera getByTipo(String tipo){
+		Carrera e= new Carrera();
 		PreparedStatement stmt=null;
 		ResultSet rs=null;
 		try {
@@ -133,8 +138,8 @@ public class DataElemento {
 			stmt.setString(1, tipo);
 			rs=stmt.executeQuery();
 			if(rs!=null && rs.next()){
-					e=new Elemento();
-					e.setTipoElemento(new TipoElemento());
+					e=new Carrera();
+					e.setTipoElemento(new Curso());
 					e.setId_elemento(rs.getInt("id_elemento"));
 					e.setNombre(rs.getString("e.nombre"));
 					e.getTipoElemento().setId_tipo(rs.getInt("id_tipo"));
@@ -159,7 +164,7 @@ public class DataElemento {
 	
 	
 	
-	public void add(Elemento e){
+	public void add(Carrera e){
 		PreparedStatement stmt=null;
 		ResultSet keyResultSet=null;
 		try {
@@ -188,7 +193,7 @@ public class DataElemento {
 		}
 	}
 	
-	public void delete(Elemento e){
+	public void delete(Carrera e){
 		PreparedStatement stmt=null;
 		ResultSet keyResultSet=null;
 		try {
@@ -215,7 +220,7 @@ public class DataElemento {
 		}
 	}
 	
-	public void update(Elemento e){
+	public void update(Carrera e){
 		PreparedStatement stmt=null;
 		ResultSet keyResultSet=null;
 		try {
