@@ -223,8 +223,16 @@ public class IncripcionCursoView extends JFrame {
 	public void mapearUsuario(Alumno per) {
 		this.txtNombre.setText(per.getNombre());
 		this.txtApellido.setText(per.getApellido());
-		this.textFieldCarrera.setText(per.getCarrera().getNombre());
+		if (per.getCarrera().getNombre() != null && !per.getCarrera().getNombre().equals("")) {
+			this.textFieldCarrera.setText(per.getCarrera().getNombre());
+		} else {
+			JOptionPane.showMessageDialog(null, "El alumno no esta inscripto a ninguna carrera", "Error",
+					JOptionPane.WARNING_MESSAGE);
+			this.dispose();
+		}
 	}
+
+
 
 	protected void guardarClick(Curso cursoElegido) {
 		if (ctrl.add(this.mapearDeForm(cursoElegido))) {

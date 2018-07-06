@@ -6,6 +6,34 @@ import entity.*;
 
 public class DataAlumno {
 
+	public boolean exists(Alumno p) {
+		PreparedStatement stmt = null;
+		ResultSet rs = null;
+		try {
+			stmt = FactoryConexion.getInstancia().getConn().prepareStatement("select * from alumno where legajo=?");
+			stmt.setInt(1, p.getLegajo());
+			rs = stmt.executeQuery();
+			if (rs != null && rs.next()) {
+				return true;
+			}
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+
+		try {
+			if (rs != null)
+				rs.close();
+			if (stmt != null)
+				stmt.close();
+			FactoryConexion.getInstancia().releaseConn();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+
+		return false;
+	}
+
 	public Alumno getByLegajo(Alumno per) {
 		Alumno p = null;
 		PreparedStatement stmt = null;
@@ -55,6 +83,7 @@ public class DataAlumno {
 	public void add(Alumno p) {
 		PreparedStatement stmt = null;
 		ResultSet keyResultSet = null;
+		ResultSet keyResultSet2 = null;
 
 		try {
 			stmt = FactoryConexion.getInstancia().getConn().prepareStatement(
@@ -79,9 +108,9 @@ public class DataAlumno {
 			stmt.setInt(1, p.getId_persona());
 			stmt.setInt(2, p.getLegajo());
 			stmt.executeUpdate();
-			keyResultSet = stmt.getGeneratedKeys();
-			if (keyResultSet != null && keyResultSet.next()) {
-				p.setIdentificador(keyResultSet.getInt(1));
+			keyResultSet2 = stmt.getGeneratedKeys();
+			if (keyResultSet2 != null && keyResultSet2.next()) {
+				p.setIdentificador(keyResultSet2.getInt(1));
 			}
 
 		} catch (SQLException e) {
@@ -90,6 +119,8 @@ public class DataAlumno {
 		try {
 			if (keyResultSet != null)
 				keyResultSet.close();
+			if (keyResultSet2 != null)
+				keyResultSet2.close();
 			if (stmt != null)
 				stmt.close();
 			FactoryConexion.getInstancia().releaseConn();
@@ -101,6 +132,7 @@ public class DataAlumno {
 	public void borrar(Alumno p) {
 		PreparedStatement stmt = null;
 		ResultSet keyResultSet = null;
+		ResultSet keyResultSet2 = null;
 		try {
 
 			stmt = FactoryConexion.getInstancia().getConn().prepareStatement("DELETE FROM alumno where legajo=?",
@@ -116,9 +148,9 @@ public class DataAlumno {
 					"DELETE FROM persona where identificador=?", PreparedStatement.RETURN_GENERATED_KEYS);
 			stmt.setInt(1, p.getId_persona());
 			stmt.executeUpdate();
-			keyResultSet = stmt.getGeneratedKeys();
-			if (keyResultSet != null && keyResultSet.next()) {
-				p.setId_persona(keyResultSet.getInt(1));
+			keyResultSet2 = stmt.getGeneratedKeys();
+			if (keyResultSet2 != null && keyResultSet2.next()) {
+				p.setId_persona(keyResultSet2.getInt(1));
 			}
 
 		} catch (SQLException e) {
@@ -127,6 +159,8 @@ public class DataAlumno {
 		try {
 			if (keyResultSet != null)
 				keyResultSet.close();
+			if (keyResultSet2 != null)
+				keyResultSet2.close();
 			if (stmt != null)
 				stmt.close();
 			FactoryConexion.getInstancia().releaseConn();
@@ -138,7 +172,9 @@ public class DataAlumno {
 	public void actualizar(Alumno oldp) {
 		PreparedStatement stmt = null;
 		ResultSet keyResultSet = null;
+		ResultSet keyResultSet2 = null;
 
+		
 		try {
 			stmt = FactoryConexion.getInstancia().getConn().prepareStatement(
 					"UPDATE persona SET tipodoc=?, documento=?, nombre=? ,apellido=?, fechanac=?  where identificador=? ",
@@ -158,16 +194,15 @@ public class DataAlumno {
 			}
 
 			stmt = FactoryConexion.getInstancia().getConn().prepareStatement(
-					"UPDATE alumno SET idpersona=?, legajo=? where idpersona=? ",
+					"UPDATE alumno SET legajo=? where idpersona=? ",
 					PreparedStatement.RETURN_GENERATED_KEYS);
 
-			stmt.setInt(1, oldp.getId_persona());
-			stmt.setInt(2, oldp.getLegajo());
-			stmt.setInt(3, oldp.getIdentificador());
+			stmt.setInt(1, oldp.getLegajo());
+			stmt.setInt(2, oldp.getIdentificador());
 			stmt.executeUpdate();
-			keyResultSet = stmt.getGeneratedKeys();
-			if (keyResultSet != null && keyResultSet.next()) {
-				oldp.setId_persona(keyResultSet.getInt(1));
+			keyResultSet2 = stmt.getGeneratedKeys();
+			if (keyResultSet2 != null && keyResultSet2.next()) {
+				oldp.setId_persona(keyResultSet2.getInt(1));
 			}
 
 		} catch (SQLException e) {
@@ -176,9 +211,12 @@ public class DataAlumno {
 		try {
 			if (keyResultSet != null)
 				keyResultSet.close();
+			if (keyResultSet2 != null)
+				keyResultSet2.close();
 			if (stmt != null)
 				stmt.close();
 			FactoryConexion.getInstancia().releaseConn();
+		
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}

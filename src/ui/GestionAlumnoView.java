@@ -220,19 +220,41 @@ public class GestionAlumnoView extends JFrame {
 	}
 
 	protected void agregarClick() {
-		ctrl.add(this.mapearDeForm());
+		
+		if (ctrl.add(this.mapearDeForm())) {
+			JOptionPane.showMessageDialog(null, "Alumno agregado exitosamente", "Exito",
+					JOptionPane.PLAIN_MESSAGE);
+		}else {
+			JOptionPane.showMessageDialog(null, "Ya existe un alumno con el legajo ingresado", "Error",
+					JOptionPane.WARNING_MESSAGE);
+		}
 		cleanscreen();
 	}
 
 	protected void borrarClick() {
-		ctrl.delete(currentPersona);
+		if(ctrl.delete(currentPersona)) {
+			JOptionPane.showMessageDialog(null, "Alumno borrado exitosamente", "Exito",
+					JOptionPane.PLAIN_MESSAGE);
+			}else {
+		JOptionPane.showMessageDialog(null, "No existe un alumno con el legajo ingresado", "Error",
+				JOptionPane.WARNING_MESSAGE);
+			}	
 		cleanscreen();
 	}
 
 	protected void modificarClick() {
-		ctrl.update(this.mapearDeForm());
+		if(ctrl.update(this.mapearDeForm())) {
+			JOptionPane.showMessageDialog(null, "Alumno Modificado exitosamente", "Exito",
+					JOptionPane.PLAIN_MESSAGE);
+	
+		
+			}else {
+		JOptionPane.showMessageDialog(null, "No existe un alumno con el legajo ingresado", "Error",
+				JOptionPane.WARNING_MESSAGE);
+	
+			}	
 		cleanscreen();
-	}
+		}
 
 	private void mapearAForm(Alumno p) {
 		this.currentPersona = p;

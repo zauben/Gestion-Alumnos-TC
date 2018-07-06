@@ -16,17 +16,32 @@ public class PersonaController {
 		pd = new PrincipalView();
 	}
 
-	public void add(Alumno p) {
-		dataPer.add(p);
+	public Boolean add(Alumno p) {
+		if (!dataPer.exists(p)) {
+			dataPer.add(p);
+			return true;
+		} else {
+			return false;
+		}
+
 	}
 
-	public void delete(Alumno p) {
-		dataPer.borrar(p);
+	public boolean delete(Alumno p) {
+		if (dataPer.exists(p)) {
+			dataPer.borrar(p);
+			return true;
+		} else {
+			return false;
+		}
 	}
 
-	public void update(Alumno oldp) {
-
-		dataPer.actualizar(oldp);
+	public boolean update(Alumno p) {
+		if (dataPer.exists(p)) {
+			dataPer.actualizar(p);
+			return true;
+		} else {
+			return false;
+		}
 	}
 
 	public Alumno getByLegajo(Alumno pe) {

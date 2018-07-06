@@ -5,7 +5,7 @@ import java.util.Properties;
 
 public class FactoryConexion {
 
-	String url = "jdbc:postgresql://localhost:5432/postgres";
+	String url = "jdbc:postgresql://localhost:5434/postgres";
 	Properties prop = new Properties();
 
 	Connection conn;
